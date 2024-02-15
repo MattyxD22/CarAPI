@@ -5,6 +5,13 @@ const DB_PASS = process.env.DB_PASS;
 
 console.log(DB_USER, DB_PASS, "");
 
+const uri =
+  "mongodb+srv://" +
+  DB_USER +
+  ":" +
+  DB_PASS +
+  "@carcluser.x5aknry.mongodb.net/?retryWrites=true&w=majority";
+console.log(uri);
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
