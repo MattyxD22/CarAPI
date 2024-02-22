@@ -6,21 +6,19 @@ const DB_PASS = process.env.DB_PASS;
 const swaggerUI = require("swagger-ui-express");
 const yamlJS = require("yamljs");
 
-console.log(DB_USER, DB_PASS, "");
-
 const uri =
   "mongodb+srv://" +
   DB_USER +
   ":" +
   DB_PASS +
   "@carcluser.x5aknry.mongodb.net/?retryWrites=true&w=majority";
-console.log(uri);
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser({ limit: "100mb" }));
 app.use(bodyParser.json());
 
 // parse requests of content-type - application/json
