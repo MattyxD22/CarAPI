@@ -1,0 +1,66 @@
+openapi: 3.0.0
+info:
+  title: MEN REST API
+  description: MongoDB ExpressJS NodeJS REST API
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api/
+    description: Localhost development server
+components:
+  securitySchemes:
+    ApiKeyAuth: # arbitrary name for the security scheme
+      type: apiKey
+      in: header # can be "header", "query" or "cookie"
+      name: auth-token
+
+  schemas:
+    carModel:
+      type: object
+      properties:
+        Make:
+          type: string
+        Model:
+          type: number
+        Year:
+          type: number
+        VIN:
+          type: string
+        Description:
+          type: string
+        Image:
+          type: array
+
+    userModel:
+      type: object
+      properties:
+        Email:
+          type: string
+        Password:
+          type: string
+
+paths:
+  /users/login:
+    post:
+      summary: Log in with account
+      description: Log in with a registered account from the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userModel"
+
+      responses:
+        201:
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  _id:
+                    type: string
+
+  
