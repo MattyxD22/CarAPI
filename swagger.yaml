@@ -8,10 +8,11 @@ servers:
     description: Localhost development server
 components:
   securitySchemes:
-    ApiKeyAuth: # arbitrary name for the security scheme
-      type: apiKey
-      in: header # can be "header", "query" or "cookie"
-      name: auth-token
+    securitySchemes:
+      bearerAuth: # arbitrary name for the security scheme
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
 
   schemas:
     carModel:
@@ -19,16 +20,22 @@ components:
       properties:
         Make:
           type: string
+          example: "Ford"
         Model:
-          type: number
+          type: string
+          example: "F-150"
         Year:
           type: number
+          example: 2020
         VIN:
           type: string
+          example: "34CA12RV64I5N"
         Description:
           type: string
+          example: "A Detailed description for this car"
         Image:
           type: array
+          example: "this parameter is an array containing [{name: imageName, url: base64-url}]"
 
     userModel:
       type: object
@@ -39,8 +46,197 @@ components:
           type: string
 
 paths:
+  /cars:
+    get:
+      tags:
+        - cars
+      summary: gets all cars
+      description: gets all cars from the database, there are no parameters
+      responses:
+        200:
+          description: returns all cars from the database
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Make:
+                    type: string
+                  Model:
+                    type: string
+                  Year:
+                    type: number
+                  VIN:
+                    type: string
+                  Description:
+                    type: string
+                  Image:
+                    type: array
+
+  /cars/carVin:
+    get:
+      tags:
+        - cars
+      summary: get specific car from VIN
+      description: a more specific way of finding a car, based on the cars VIN Number. it is currently not in use for anything else, than testing the API.
+      parameters:
+        - name: carVIN
+          description: Returns a specific car from the provided VIN
+      responses:
+        200:
+          description: Returned Car
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Make:
+                    type: string
+                  Model:
+                    type: string
+                  Year:
+                    type: number
+                  VIN:
+                    type: string
+                  Description:
+                    type: string
+                  Image:
+                    type: array
+        404:
+          description: the specific car was not found
+        500:
+          description: a server error occured
+
+  /cars/updateCar:
+    put:
+      tags:
+        - cars
+      summary: updates a specific car
+      description: updates a car, with new information provided in the put.body
+      parameters:
+        - name: carVIN
+          description: Updates the specific car from the provided VIN
+
+      requestBody:
+        description: Update an existent car in the database
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/carModel"
+        required: true
+
+      responses:
+        200:
+          description: Car updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Make:
+                    type: string
+                  Model:
+                    type: string
+                  Year:
+                    type: number
+                  VIN:
+                    type: string
+                  Description:
+                    type: string
+                  Image:
+                    type: array
+        404:
+          description: the specific car was not found
+        500:
+          description: a server error occured
+      security:
+        - bearerAuth: []
+
+  /cars/newCar:
+    post:
+      tags:
+        - cars
+      summary: Create a new car
+      description: Creates a new index in the database, with the data provided
+
+      requestBody:
+        description: reads parameters from the request body and adds that to the database
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/carModel"
+        required: true
+
+      responses:
+        200:
+          description: Car added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Make:
+                    type: string
+                  Model:
+                    type: string
+                  Year:
+                    type: number
+                  VIN:
+                    type: string
+                  Description:
+                    type: string
+                  Image:
+                    type: array
+        500:
+          description: a server error occured
+      security:
+        - bearerAuth: []
+
+  /cars/deleteCar:
+    delete:
+      tags:
+        - cars
+      summary: adds a new car
+      description: adds a new car to the database
+
+      parameters:
+        - name: carVIN
+          description: deletes the specific car from the provided VIN
+      required: true
+
+      responses:
+        200:
+          description: Car deleted
+        404:
+          description: no Car found
+        500:
+          description: a server error occured
+      security:
+        - bearerAuth: []
+
+  /users:
+    get:
+      tags:
+        - users
+      summary: gets a list of all users
+      description: returns a list of all the users from the database
+      responses:
+        200:
+          description: returns all cars from the database
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Email:
+                    type: string
+                  Password:
+                    type: string
+
   /users/login:
     post:
+      tags:
+        - users
       summary: Log in with account
       description: Log in with a registered account from the database
       requestBody:
@@ -51,16 +247,64 @@ paths:
               $ref: "#/components/schemas/userModel"
 
       responses:
-        201:
+        200:
           description: User logged in successfully
+
+  /checkEmail:
+    get:
+      tags:
+        - users
+      summary: checks if an email exists
+      description: checks the provided email when creating an account. if the email exists, then the user has to provide a different email. if it doesnt, then the system can proceed to create an account with the provided email.
+      parameters:
+        - name: Email
+          description: Checks provided email
+      responses:
+        200:
+          description: Email doesnt exist in the system
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
+                  Exist:
+                    type: boolean
+                    example: false
+                  Message:
                     type: string
-                  _id:
+        409:
+          description: Email does exist in the system
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Exist:
+                    type: boolean
+                    example: true
+                  Message:
                     type: string
+        500:
+          description: a server error occured
 
-  
+  /user/createAccount:
+    post:
+      tags:
+        - users
+      summary: Create a new user
+      description: Creates a new index in the database, with the data provided
+
+      requestBody:
+        description: reads parameters from the request body and adds that to the database
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userModel"
+        required: true
+
+      responses:
+        200:
+          description: User added successfully
+
+        500:
+          description: a server error occured

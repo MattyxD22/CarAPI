@@ -12,7 +12,7 @@ app.get("/", async (req, res) => {
   //console.log("request recieved", req);
   try {
     const car = await cars.find({});
-    if (!car) res.status(404).send("No item found");
+    if (!car) res.status(404).send("No cars found");
 
     res.status(200).send(car);
   } catch (err) {
@@ -23,8 +23,8 @@ app.get("/", async (req, res) => {
 app.get("/carVIN/:carVIN", async (req, res) => {
   try {
     const car = await cars.find({ VIN: req.params.carVIN });
-    if (!car) res.status(404).send("No item found");
-    res.status(200).send(car);
+    if (!car) res.status(404).send("No car found");
+    res.status(200).json({ message: "Returned car", car: car });
   } catch (err) {
     console.log(err.message);
     res.status(500).send(err);
@@ -59,20 +59,17 @@ app.post("/newCar", verifyToken, upload.array("images"), async (req, res) => {
 
     await cars.create(car);
 
-    console.log(car);
-
     res.status(200).json({ Message: "Car added successfully" });
   } catch (error) {
     return res
       .status(500)
-      .json({ error: "Error when posting a new car", message: error.message });
+      .json({ error: error, message: "Error when posting a new car" });
   }
 });
 
 app.delete("/deleteCar", verifyToken, async (req, res) => {
   try {
     const carVin = req.body.VIN;
-    console.log(carVin);
 
     const carToDelete = await cars.findOneAndDelete({ VIN: carVin });
 
