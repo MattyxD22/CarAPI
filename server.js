@@ -40,7 +40,12 @@ const usersRoute = require("./routes/userRoute");
 // // app.use("/kontrol", kontrolRoute);
 // // app.use("/export", exportRoute);
 
-mongoose.connect(process.env.DB_URI);
+try {
+  mongoose.connect(process.env.DB_URI);
+  console.log("mongoDB connected!");
+} catch (error) {
+  console.log("mongoDB connection error: ", error.message);
+}
 
 app.use("/api/cars", carsRoute);
 app.use("/api/users", usersRoute);
