@@ -21,9 +21,8 @@ app.get("/", async (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const user = await users.findOne({
-      Email: req.body.email
+      email: req.body.email,
     });
-
 
     if (!user || user.length == 0 || user === null) {
       res.status(404).json({
@@ -31,28 +30,28 @@ app.post("/login", async (req, res) => {
         message: "no user found with provided information",
       });
     } else {
-      const compare = bcrypt.compareSync(req.body.password, user.Password);
+      const compare = bcrypt.compareSync(req.body.password, user.password);
 
-      const tokenEmail = user.Email + ":" + Date.now().toString(); // date.now() is for creating an UID
+      if (compare) {
+        const tokenEmail = user.email + ":" + Date.now().toString(); // date.now() is for creating an UID
 
-      const token = jwt.sign(
-        {
-          exp: Date.now() / 1000 + 60 * 60 * 24, // token should expire in 24 hours
-          data: tokenEmail,
-        },
-        process.env.DB_SUPER_SECRET
-        
-      );
+        const token = jwt.sign(
+          {
+            exp: Date.now() / 1000 + 60 * 60 * 24, // token should expire in 24 hours
+            data: tokenEmail,
+          },
+          process.env.DB_SUPER_SECRET
+        );
 
-
-      res.header("auth-token", token).json({
-        error: null,
-        data: {
-          Status: 200,
-          Message: "Token signed successfully",
-          data: token,
-        },
-      });
+        res.header("auth-token", token).json({
+          error: null,
+          data: {
+            Status: 200,
+            Message: "Token signed successfully",
+            data: token,
+          },
+        });
+      }
     }
   } catch (err) {
     console.log(err.message);
@@ -63,7 +62,6 @@ app.post("/login", async (req, res) => {
 //this one was tricky, but setting it up to use proper async/await fixed it
 app.get("/checkEmail/:email", async (req, res) => {
   try {
-
     let user;
 
     await users.find({ Email: req.params.email }).then(async (data) => {

@@ -7,12 +7,16 @@ servers:
   - url: http://localhost:3000/api/
     description: Localhost development server
 components:
+  # securitySchemes:
+  #   bearerAuth: # arbitrary name for the security scheme
+  #   type: http
+  #   scheme: bearer
+  #   bearerFormat: JWT
   securitySchemes:
-    securitySchemes:
-      bearerAuth: # arbitrary name for the security scheme
-    type: http
-    scheme: bearer
-    bearerFormat: JWT
+    ApiKeyAuth:        # arbitrary name for the security scheme
+      type: apiKey
+      in: header       # can be "header", "query" or "cookie"
+      name: authorization
 
   schemas:
     carModel:
@@ -40,9 +44,9 @@ components:
     userModel:
       type: object
       properties:
-        Email:
+        email:
           type: string
-        Password:
+        password:
           type: string
 
 paths:
@@ -60,17 +64,17 @@ paths:
               schema:
                 type: object
                 properties:
-                  Make:
+                  make:
                     type: string
-                  Model:
+                  model:
                     type: string
-                  Year:
+                  year:
                     type: number
                   VIN:
                     type: string
-                  Description:
+                  description:
                     type: string
-                  Image:
+                  image:
                     type: array
 
   /cars/carVin:
@@ -150,7 +154,7 @@ paths:
         500:
           description: a server error occured
       security:
-        - bearerAuth: []
+        - ApiKeyAuth: []
 
   /cars/newCar:
     post:
@@ -190,7 +194,7 @@ paths:
         500:
           description: a server error occured
       security:
-        - bearerAuth: []
+        - ApiKeyAuth: []
 
   /cars/deleteCar:
     delete:
@@ -212,7 +216,7 @@ paths:
         500:
           description: a server error occured
       security:
-        - bearerAuth: []
+        - ApiKeyAuth: []
 
   /users:
     get:
@@ -228,9 +232,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  Email:
+                  email:
                     type: string
-                  Password:
+                  password:
                     type: string
 
   /users/login:
