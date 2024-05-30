@@ -1,17 +1,11 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
+require("dotenv-flow").config();
 const mongoose = require("mongoose");
-const DB_USER = process.env.DB_USER;
-const DB_PASS = process.env.DB_PASS;
+mongoose.connect(process.env.DB_URI);
 
 const swaggerUI = require("swagger-ui-express");
 const yamlJS = require("yamljs");
 
-const uri =
-  "mongodb+srv://" +
-  DB_USER +
-  ":" +
-  DB_PASS +
-  "@carcluser.x5aknry.mongodb.net/?retryWrites=true&w=majority";
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -40,14 +34,20 @@ const usersRoute = require("./routes/userRoute");
 // // app.use("/kontrol", kontrolRoute);
 // // app.use("/export", exportRoute);
 
-mongoose.connect(process.env.DB_URI);
+
 
 app.use("/api/cars", carsRoute);
 app.use("/api/users", usersRoute);
 
-const swaggerDefinition = yamlJS.load("./swagger.yaml");
-app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDefinition));
+app.get("/api/health-check", (req, res) => {
+  res.status(200).send({ message: "Health check was successful!" });
+});
 
 app.listen(PORT, async () => {
   console.log("Server Listening on PORT:", PORT);
 });
+
+const swaggerDefinition = yamlJS.load("./swagger.yaml");
+app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDefinition));
+
+console.log(123)

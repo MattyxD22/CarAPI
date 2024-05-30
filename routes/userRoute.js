@@ -92,6 +92,7 @@ app.post("/createAccount", async (req, res) => {
       Email: req.body.email,
       Password: hash,
     });
+
     res.status(200).json({
       status: "Success",
       message: "User Account created successfully",
