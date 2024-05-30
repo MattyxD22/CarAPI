@@ -24,10 +24,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-        env:
-          DB_URI: ${{ secrets.DB_URI }}
-          SECRET: ${{ secrets.SECRET }}
-          JWT_EXPIRES_IN: ${{ secrets.expireToken }}
 
       - name: NPM install, build and test
         run: |
@@ -35,7 +31,10 @@ jobs:
           npm run
           npm test
 
-        
+        env:
+          DB_URI: ${{ secrets.DB_URI }}
+          SECRET: ${{ secrets.SECRET }}
+          JWT_EXPIRES_IN: ${{ secrets.EXPIRETOKEN }}
 
   deploy:
     name: Deploy
