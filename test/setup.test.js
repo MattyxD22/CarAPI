@@ -1,4 +1,8 @@
-process.env.NODE_ENV = "test";
+//process.env.NODE_ENV = "test";
+
+const mongooseTest = require("mongoose");
+mongooseTest.connect(process.env.DB_URI_TEST);
+
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const expect = chai.expect;
@@ -10,6 +14,7 @@ const path = require("path");
 const cars = require("../models/carModel");
 const users = require("../models/userModel");
 const server = require("../server");
+const { default: mongoose } = require("mongoose");
 
 const newUser = {
   email: "testuser@test.com",
@@ -43,13 +48,11 @@ before(async () => {
   // Insert the parsed data into database
   await insertDataIntoDatabase(jsonData);
 
-  console.log("b Create");
   const createUserRes = await chai
     .request(server)
     .post("/api/users/createAccount")
     .send(newUser);
   expect(createUserRes).to.have.status(200);
-  console.log("a Create");
 
   const loginRes = await chai
     .request(server)

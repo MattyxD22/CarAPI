@@ -23,7 +23,6 @@ jobs:
       - name: Use Node.JS ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          env-file: .env
           node-version: ${{ matrix.node-version }}
 
       - name: NPM install, build and test
