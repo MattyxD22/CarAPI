@@ -1,8 +1,4 @@
-//process.env.NODE_ENV = "test";
-
-const mongooseTest = require("mongoose");
-mongooseTest.connect(process.env.DB_URI_TEST);
-
+process.env.NODE_ENV = "test";
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const expect = chai.expect;
@@ -14,7 +10,6 @@ const path = require("path");
 const cars = require("../models/carModel");
 const users = require("../models/userModel");
 const server = require("../server");
-const { default: mongoose } = require("mongoose");
 
 const newUser = {
   email: "testuser@test.com",
@@ -72,12 +67,12 @@ before(async () => {
 });
 
 //Also clears the test database after doing the testing
-// after(async () => {
-//   try {
-//     await cars.deleteMany({});
-//     await users.deleteMany({});
-//   } catch (err) {
-//     console.error("Error during setup:", err);
-//     throw err;
-//   }
-// });
+after(async () => {
+  try {
+    await cars.deleteMany({});
+    await users.deleteMany({});
+  } catch (err) {
+    console.error("Error during setup:", err);
+    throw err;
+  }
+});
