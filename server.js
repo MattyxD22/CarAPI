@@ -1,7 +1,7 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv-flow").config();
 const mongoose = require("mongoose");
-console.log(process.env.DB_URI.split(":")[2].substring(0,3));
+// console.log(process.env.DB_URI.split(":")[2].substring(0,3));
 mongoose.connect(process.env.DB_URI);
 const cookieParser = require("cookie-parser");
 
