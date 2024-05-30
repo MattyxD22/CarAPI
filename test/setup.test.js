@@ -46,6 +46,7 @@ before(async () => {
     // Insert the parsed data into database
     await insertDataIntoDatabase(jsonData);
 
+
     const createUserRes = await chai
       .request(server)
       .post("/api/users/createAccount")
@@ -74,12 +75,12 @@ before(async () => {
 });
 
 //Also clears the test database after doing the testing
-after(async () => {
-  try {
-    await cars.deleteMany({});
-    await users.deleteMany({});
-  } catch (err) {
-    console.error("Error during setup:", err);
-    throw err;
-  }
-});
+// after(async () => {
+//   try {
+//     await cars.deleteMany({});
+//     await users.deleteMany({});
+//   } catch (err) {
+//     console.error("Error during setup:", err);
+//     throw err;
+//   }
+// });
