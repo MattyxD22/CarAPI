@@ -43,7 +43,7 @@ app.post("/login", async (req, res) => {
           exp: Date.now() / 1000 + 60 * 60 * 24, // token should expire in 24 hours
           data: tokenEmail,
         },
-        process.env.DB_SUPER_SECRET
+        process.env.SECRET
       );
 
 
