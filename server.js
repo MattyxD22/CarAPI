@@ -2,7 +2,7 @@ const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv-flow").config();
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DB_URI);
-
+// empty
 const cookieParser = require("cookie-parser");
 
 const swaggerUI = require("swagger-ui-express");
