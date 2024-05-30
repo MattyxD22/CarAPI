@@ -35,8 +35,7 @@ app.post("/login", async (req, res) => {
         throw new Error("Email or Password doesnt match");
       }
 
-      if (compare) {
-        const tokenEmail = user.email + ":" + Date.now().toString(); // date.now() is for creating an UID
+      const tokenEmail = user.Email + ":" + Date.now().toString(); // date.now() is for creating an UID
 
       const token = jwt.sign(
         {
@@ -46,16 +45,21 @@ app.post("/login", async (req, res) => {
         process.env.SECRET
       );
 
+      res.cookie("auth-token", token, {
+        httpOnly: true,
+        secure: true,
+        path: "/",
+        sameSite: "none",
+      });
 
-        res.header("auth-token", token).json({
-          error: null,
-          data: {
-            Status: 200,
-            Message: "Token signed successfully",
-            data: token,
-          },
-        });
-      }
+      res.header("auth-token", token).json({
+        error: null,
+        data: {
+          Status: 200,
+          Message: "Token signed successfully",
+          data: token,
+        },
+      });
     }
   } catch (err) {
     console.log(err.message);

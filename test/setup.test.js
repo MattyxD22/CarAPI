@@ -57,16 +57,19 @@ before(async () => {
       .post("/api/users/login")
       .send({ email: newUser.email, password: newUser.password });
 
-    const authTokenCookie = loginRes.headers["set-cookie"].find((cookie) =>
-      cookie.startsWith("auth-token=")
-    );
+      console.log("send user req")
 
-    if (authTokenCookie) {
-      const tokenValue = authTokenCookie.split(";")[0].split("=")[1];
-      process.env.AUTH_TOKEN = tokenValue;
-    } else {
-      throw new Error("Auth token cookie was not found");
-    }
+      const authTokenCookie = loginRes.headers["set-cookie"].find((cookie) =>
+
+        cookie.startsWith("auth-token=")
+      );
+  
+      if (authTokenCookie) {
+        const tokenValue = authTokenCookie.split(";")[0].split("=")[1];
+        process.env.AUTH_TOKEN = tokenValue;
+      } else {
+        throw new Error("Auth token cookie was not found");
+      }
   } catch (err) {
     console.error("Error during setup:", err);
     throw err;
@@ -74,12 +77,12 @@ before(async () => {
 });
 
 //Also clears the test database after doing the testing
-after(async () => {
-  try {
-    await cars.deleteMany({});
-    await users.deleteMany({});
-  } catch (err) {
-    console.error("Error during setup:", err);
-    throw err;
-  }
-});
+// after(async () => {
+//   try {
+//     await cars.deleteMany({});
+//     await users.deleteMany({});
+//   } catch (err) {
+//     console.error("Error during setup:", err);
+//     throw err;
+//   }
+// });
