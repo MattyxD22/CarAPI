@@ -21,7 +21,7 @@ app.get("/", async (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const user = await users.findOne({
-      Email: req.body.email,
+      email: req.body.email,
     });
 
     if (!user || user.length == 0 || user === null) {
@@ -30,7 +30,7 @@ app.post("/login", async (req, res) => {
         message: "no user found with provided information",
       });
     } else {
-      const compare = bcrypt.compareSync(req.body.password, user.Password);
+      const compare = bcrypt.compareSync(req.body.password, user.password);
       if (!compare) {
         throw new Error("Email or Password doesnt match");
       }
@@ -72,7 +72,7 @@ app.get("/checkEmail/:email", async (req, res) => {
   try {
     let user;
 
-    await users.find({ Email: req.params.email }).then(async (data) => {
+    await users.find({ email: req.params.email }).then(async (data) => {
       user = data;
     });
 
@@ -97,8 +97,8 @@ app.post("/createAccount", async (req, res) => {
     const hash = bcrypt.hashSync(req.body.password, 10);
 
     await users.create({
-      Email: req.body.email,
-      Password: hash,
+      email: req.body.email,
+      password: hash,
     });
 
     res.status(200).json({
