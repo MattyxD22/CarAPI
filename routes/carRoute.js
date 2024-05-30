@@ -8,11 +8,23 @@ const verifyToken = require("../auth");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-app.get("/", async (req, res) => {
-  //console.log("request recieved", req);
+app.get("/getAllCars", async (req, res) => {
   try {
     const car = await cars.find({});
     if (!car) res.status(404).send("No cars found");
+
+    res.status(200).json({Title: "Successfull request", cars: car});
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+app.get("/", async (req, res) => {
+  
+  try {
+    const car = await cars.find({});
+    console.log(car.length)
+    if (!car.length) res.status(404).send("No cars found");
 
     res.status(200).send(car);
   } catch (err) {
@@ -23,8 +35,13 @@ app.get("/", async (req, res) => {
 app.get("/carVIN/:carVIN", async (req, res) => {
   try {
     const car = await cars.find({ VIN: req.params.carVIN });
-    if (!car) res.status(404).send("No car found");
-    res.status(200).json({ message: "Returned car", car: car });
+    if (!car.length){
+
+      res.status(404).json({ Title: "Wrong VIN", Message: "No car with provided VIN, found" });
+    } else {
+
+      res.status(200).json({ message: "Returned car", car: car });
+    }
   } catch (err) {
     console.log(err.message);
     res.status(500).send(err);

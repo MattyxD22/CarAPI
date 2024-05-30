@@ -21,9 +21,8 @@ app.get("/", async (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const user = await users.findOne({
-      Email: req.body.email
+      Email: req.body.email,
     });
-
 
     if (!user || user.length == 0 || user === null) {
       res.status(404).json({
@@ -32,6 +31,9 @@ app.post("/login", async (req, res) => {
       });
     } else {
       const compare = bcrypt.compareSync(req.body.password, user.Password);
+      if (!compare) {
+        throw new Error("Email or Password doesnt match");
+      }
 
       const tokenEmail = user.Email + ":" + Date.now().toString(); // date.now() is for creating an UID
 
@@ -43,6 +45,12 @@ app.post("/login", async (req, res) => {
         process.env.DB_SUPER_SECRET
       );
 
+      res.cookie("auth-token", token, {
+        httpOnly: true,
+        secure: true,
+        path: "/",
+        sameSite: "none",
+      });
 
       res.header("auth-token", token).json({
         error: null,
@@ -62,7 +70,6 @@ app.post("/login", async (req, res) => {
 //this one was tricky, but setting it up to use proper async/await fixed it
 app.get("/checkEmail/:email", async (req, res) => {
   try {
-
     let user;
 
     await users.find({ Email: req.params.email }).then(async (data) => {
@@ -88,6 +95,7 @@ app.get("/checkEmail/:email", async (req, res) => {
 app.post("/createAccount", async (req, res) => {
   try {
     const hash = bcrypt.hashSync(req.body.password, 10);
+
     await users.create({
       Email: req.body.email,
       Password: hash,
