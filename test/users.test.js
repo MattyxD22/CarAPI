@@ -12,7 +12,6 @@ const email = "testuser@test.com"
 
 
 describe("Tests a single route in the userRoute.js file, as the other routes are tested in the initial setup", async()=>{
-    // test
     it("Test if email matches in the database, to prevent duplicate emails in the system. NOT IMPLEMENTED", async()=>{
         const res = await chai.request(server).get("/api/users/checkEmail/" + email)
         expect(res).to.have.status(409)
