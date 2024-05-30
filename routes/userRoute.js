@@ -21,7 +21,7 @@ app.get("/", async (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const user = await users.findOne({
-      email: req.body.email,
+      Email: req.body.email,
     });
 
     if (!user || user.length == 0 || user === null) {
@@ -30,18 +30,22 @@ app.post("/login", async (req, res) => {
         message: "no user found with provided information",
       });
     } else {
-      const compare = bcrypt.compareSync(req.body.password, user.password);
+      const compare = bcrypt.compareSync(req.body.password, user.Password);
+      if (!compare) {
+        throw new Error("Email or Password doesnt match");
+      }
 
       if (compare) {
         const tokenEmail = user.email + ":" + Date.now().toString(); // date.now() is for creating an UID
 
-        const token = jwt.sign(
-          {
-            exp: Date.now() / 1000 + 60 * 60 * 24, // token should expire in 24 hours
-            data: tokenEmail,
-          },
-          process.env.DB_SUPER_SECRET
-        );
+      const token = jwt.sign(
+        {
+          exp: Date.now() / 1000 + 60 * 60 * 24, // token should expire in 24 hours
+          data: tokenEmail,
+        },
+        process.env.DB_SUPER_SECRET
+      );
+
 
         res.header("auth-token", token).json({
           error: null,
@@ -87,10 +91,12 @@ app.get("/checkEmail/:email", async (req, res) => {
 app.post("/createAccount", async (req, res) => {
   try {
     const hash = bcrypt.hashSync(req.body.password, 10);
+
     await users.create({
       Email: req.body.email,
       Password: hash,
     });
+
     res.status(200).json({
       status: "Success",
       message: "User Account created successfully",
