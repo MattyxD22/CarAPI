@@ -4,13 +4,10 @@ require('dotenv-flow').config({
   default_node_env: 'development'
 });
 const mongoose = require("mongoose");
-console.log(process.env.DB_URI.split(":")[0]);
+console.log(process.env.DB_URI.split("/")[3]);
 mongoose.set("strictQuery", false);
 mongoose
-  .connect(process.env.DB_URI, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-  })
+  .connect(process.env.DB_URI)
   .catch((error) => console.log("Error connecting to MongoDB:" + error));
 
 const cookieParser = require("cookie-parser");
