@@ -4,6 +4,7 @@ require('dotenv-flow').config({
   default_node_env: 'development'
 });
 const mongoose = require("mongoose");
+console.log(process.env.DB_URI.split(":")[0]);
 mongoose.set("strictQuery", false);
 mongoose
   .connect(process.env.DB_URI, {
