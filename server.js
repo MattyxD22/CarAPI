@@ -1,11 +1,10 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const dotenv = require('dotenv-flow').config({
+require('dotenv-flow').config({
   node_env: process.env.NODE_ENV,
   default_node_env: 'development'
 });
-console.log(dotenv)
 const mongoose = require("mongoose");
-console.log(process.env.DB_URI.split(":")[2].substring(0,3));
+console.log(process.env.DB_URI.split("/")[3]);
 mongoose.connect(process.env.DB_URI);
 const cookieParser = require("cookie-parser");
 
