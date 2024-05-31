@@ -5,7 +5,14 @@ require('dotenv-flow').config({
 });
 const mongoose = require("mongoose");
 console.log(process.env.DB_URI.split("/")[3]);
-mongoose.connect(process.env.DB_URI);
+mongoose.set("strictQuery", false);
+mongoose
+  .connect(process.env.DB_URI, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  })
+  .catch((error) => console.log("Error connecting to MongoDB:" + error));
+
 const cookieParser = require("cookie-parser");
 
 const swaggerUI = require("swagger-ui-express");
