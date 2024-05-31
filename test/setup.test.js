@@ -32,7 +32,9 @@ const insertDataIntoDatabase = async (data) => {
 //Clear test database before doing the testing, just in case
 // Initial testing for ensuring communication with the database
 before(async () => {
-  await cars.deleteMany({});
+  await cars.deleteMany({}).then(()=>{
+    console.log("deleted all cars")
+  });
   await users.deleteMany({});
 
   // read cars.json, format it and insert it into the database
