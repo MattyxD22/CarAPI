@@ -20,6 +20,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Copy .env Files
+        run: |
+          cp ../.env /github/workspace/.env
+          cp ../.env.test /github/workspace/.env.test
+
       - name: Use Node.JS ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
