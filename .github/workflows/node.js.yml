@@ -22,8 +22,8 @@ jobs:
 
       - name: Copy .env Files
         run: |
-          cp ../.env /github/workspace/.env
-          cp ../.env.test /github/workspace/.env.test
+          cp .env /github/workspace/.env
+          cp .env.test /github/workspace/.env.test
 
       - name: Use Node.JS ${{ matrix.node-version }}
         uses: actions/setup-node@v4
